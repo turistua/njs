@@ -1,0 +1,37 @@
+<form name="editPersonForm" novalidate>
+<table class="table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Surname</th>
+        <th width="100">Age</th>
+        <th width="150"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="person in people">
+        <td>{{person.id | limitString:5}}</td>
+        <td ng-click="view(person.id)">{{person.name}}</td>
+        <td>{{person.surname}}</td>
+        <td>{{person.age}}</td>
+        <td width="150">
+            <button class="btn btn-link" ng-click="edit(person)">Edit</button>
+            <button class="btn btn-link" ng-click="delete(person.id)">Delete</button>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td></td>
+        <td><input type="text" class="form-control" name="name" ng-model="editPerson.name" required /></td>
+        <td><input type="text" class="form-control" name="surname" ng-model="editPerson.surname" required /></td>
+        <td><input type="number" class="form-control" name="age" ng-model="editPerson.age" required /></td>
+        <td>
+            <button class="btn btn-primary" ng-click="savePerson()" ng-disabled="editPersonForm.$invalid" ng-class="{'disabled': editPersonForm.$invalid}">Save</button>
+            <button class="btn btn-primary" ng-click="resetPerson()">Cancel</button>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</form>
