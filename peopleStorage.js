@@ -1,10 +1,37 @@
 var fs = require('fs');
 var uuid = require('node-uuid');
-var people = require('./api/people.json');
+var people = null;
+var path = null;
 var _ = require('lodash');
 
+var configureStorage = function (p) {
+    fs.open(p, 'r', function(err, fd){
+        // if file doesn't exist we might want to create it and fill with {} (as empty JSON object)
+        // all this stuff might be done sync ...
+        if (err) {
+            fs.writeFile(p, "{}", function(err, fd){
+                if (!err) {
+                    people = require('./' + p);
+                }
+            });
+        } else {
+            people = require('./' + p);
+            fs.close(fd, function(){});
+        }
+    });
+
+    path = p;
+    return {
+        get: _get,
+        create: _create,
+        update: _update,
+        delete: _delete,
+        list: _list
+    }
+};
+
 var _saveState = function(cb) {
-    fs.writeFile('./api/people.json', JSON.stringify(people), cb);
+        fs.writeFile(path, JSON.stringify(people), cb);
     },
     _list = function (cb) {
         var peopleArray = _.values(people);
@@ -41,11 +68,5 @@ var _saveState = function(cb) {
         });
     }
 
-;
-module.exports = {
-    get: _get,
-    create: _create,
-    update: _update,
-    delete: _delete,
-    list: _list
-}
+    ;
+module.exports = configureStorage;
